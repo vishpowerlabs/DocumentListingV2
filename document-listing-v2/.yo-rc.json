@@ -1,0 +1,23 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "document-listing-v2",
+    "environment": "spo",
+    "packageManager": "npm",
+    "isDomainIsolated": false,
+    "useGulp": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "DocumentListingV2",
+    "componentDescription": "Document Listing V2",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "20.12.2",
+    "sdksVersions": {},
+    "version": "1.22.0",
+    "libraryName": "document-listing-v-2",
+    "libraryId": "de8c9ae6-fdac-41d9-b969-bb6a792a9e4f",
+    "solutionShortDescription": "document-listing-v2 description",
+    "skipFeatureDeployment": true
+  }
+}

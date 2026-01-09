@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "document-listing-v-2-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/documentListingV2/DocumentListingV2WebPart.js",
+          "manifest": "./src/webparts/documentListingV2/DocumentListingV2WebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "DocumentListingV2WebPartStrings": "lib/webparts/documentListingV2/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
+  }
+}

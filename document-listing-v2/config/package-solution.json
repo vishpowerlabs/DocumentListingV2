@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "document-listing-v-2-client-side-solution",
+    "id": "de8c9ae6-fdac-41d9-b969-bb6a792a9e4f",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.22.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "document-listing-v2 description"
+      },
+      "longDescription": {
+        "default": "document-listing-v2 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "document-listing-v-2 Feature",
+        "description": "The feature that activates elements of the document-listing-v-2 solution.",
+        "id": "05999f47-8d1e-4140-874d-298a75d7b506",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/document-listing-v-2.sppkg"
+  }
+}
