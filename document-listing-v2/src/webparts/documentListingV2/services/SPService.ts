@@ -1,5 +1,6 @@
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { Guid } from "@microsoft/sp-core-library";
 import { IDocument } from "../models/interfaces";
 import { ISPItemsResponse } from "../models/ISPData";
 
@@ -111,7 +112,8 @@ export class SPService {
                 return { status: 'Exists', itemId: data.value[0].Id };
             } else {
                 // Generate Request ID (simple random GUID-like string or use sp-core-library Guid)
-                const requestId = this._generateGuid();
+                // Generate Request ID (simple random GUID-like string or use sp-core-library Guid)
+                const requestId = Guid.newGuid().toString();
                 const requestDate = new Date().toISOString();
 
                 const body: any = {
@@ -172,11 +174,5 @@ export class SPService {
         }
     }
 
-    private _generateGuid(): string {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c: string) {
-            const r = Math.trunc(Math.random() * 16);
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
+
 }
