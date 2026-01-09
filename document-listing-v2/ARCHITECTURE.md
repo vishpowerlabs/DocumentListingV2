@@ -6,10 +6,35 @@ This document outlines the comprehensive architecture, design specifications, an
 
 The **Document Listing V2** is a persistent, theme-aware SharePoint Framework (SPFx) web part designed to display a searchable and filterable catalog of documents from a specified source library. It provides distinct features for categorizing content, requesting access to specific documents, and managing those requests via a separate SharePoint list.
 
-### Why use it?
--   **Curated Experience**: Present policies, procedures, and templates in a polished, user-friendly grid.
--   **Access Control**: Allow users to *see* documents exist but require approval/tracking to *download* or *access* them (e.g., Sensitive forms).
--   **Theme Consistency**: Seamlessly blends with any SharePoint site theme.
+### Key Use Cases
+
+#### 1. Centralized Policy & Procedure Hub (Organizations)
+**Scenario**: An organization wants to showcase standard operating procedures (SOPs), HR policies, and compliance documents in a visually appealing, easy-to-navigate format.
+-   **Need**: Users are overwhelmed by traditional folder structures and cannot find relevant documents quickly.
+-   **Solution**: The web part categorizes documents by Department (Category) and Doc Type (SubCategory), allowing employees to filter and find exactly what they need in seconds.
+-   **Value**: improved discoverability and a consistent, branded user experience.
+
+#### 2. Controlled Document Distribution (Compliance/Legal)
+**Scenario**: A legal team needs to share sensitive contract templates but must track who downloads them to ensure they are using the latest version.
+-   **Need**: Prevent uncontrolled proliferation of outdated templates.
+-   **Solution**: "Request Access" mode is enabled. Users can see the document exists but must click "Request Access" to get the download link.
+-   **Value**: The system logs every request, providing an audit trail of who requested which document and when.
+
+#### 3. Closed-Loop Feedback System (Knowledge Management)
+**Scenario**: A Knowledge Management team wants to not only share best practices but also understand if they are actually helpful to the workforce.
+-   **Need**: Qualitative data on document utility.
+-   **Solution**:
+    1.  User requests a document.
+    2.  System tracks the download.
+    3.  After X days, a Power Automate flow sends a follow-up email asking "Was this document helpful?".
+    4.  A **separate Feedback Web Part** collects this structured feedback.
+-   **Value**: actionable insights to improve content quality based on real user feedback.
+
+#### 4. Self-Service Template Repository (IT/PMO)
+**Scenario**: A Project Management Office (PMO) provides standard project charters and risk logs.
+-   **Need**: Reduce the burden on PMO staff emailing templates manually.
+-   **Solution**: Documents are listed in the web part. Users self-serve by searching and downloading. High-value templates can still require a lightweight "Request" to track usage statistics without a heavy approval process.
+-   **Value**: empowering users while maintaining visibility into asset utilization.
 
 ## 2. Architecture Diagram
 
@@ -50,29 +75,29 @@ Data is structured across SharePoint Lists and Libraries to separate content fro
 Role: **Content Storage**.
 Permissions: **Read-Only** for general users.
 
-| Internal Name | Type | Purpose |
-| :--- | :--- | :--- |
-| `FileLeafRef` | Text | Filename |
-| `Title` | Text | Display Title |
-| `Category` | Choice | Primary grouping (Side Nav) |
+| Internal Name | Type   | Purpose                       |
+| :------------ | :----- | :---------------------------- |
+| `FileLeafRef` | Text   | Filename                      |
+| `Title`       | Text   | Display Title                 |
+| `Category`    | Choice | Primary grouping (Side Nav)   |
 | `SubCategory` | Choice | Secondary grouping (Top Tabs) |
-| `Description` | Note | Details shown in grid |
-| `IsPinned` | Yes/No | Top-of-list pinning logic |
+| `Description` | Note   | Details shown in grid         |
+| `IsPinned`    | Yes/No | Top-of-list pinning logic     |
 
 ### B. Feedback Tracking (Request Access List)
 Role: **Transactional Logging**.
 Permissions: **Contribute** (Users create items).
 
-| Internal Name | Type | Purpose |
-| :--- | :--- | :--- |
-| `Title` | Text | "Request for [Doc Name]" |
-| `Email` | Text | Requester's email |
-| `FileID` | Text | ID of requested document |
-| `RequestID` | Text | Unique GUID |
-| `RequestDate` | DateTime | Timestamp of request |
-| `DownloadDate` | DateTime | When file was accessed |
-| `FeedbackProvided` | Yes/No | Has feedback been given? |
-| `FeedbackRequired` | Yes/No | System flag for automation |
+| Internal Name      | Type     | Purpose                    |
+| :----------------- | :------- | :------------------------- |
+| `Title`            | Text     | "Request for [Doc Name]"   |
+| `Email`            | Text     | Requester's email          |
+| `FileID`           | Text     | ID of requested document   |
+| `RequestID`        | Text     | Unique GUID                |
+| `RequestDate`      | DateTime | Timestamp of request       |
+| `DownloadDate`     | DateTime | When file was accessed     |
+| `FeedbackProvided` | Yes/No   | Has feedback been given?   |
+| `FeedbackRequired` | Yes/No   | System flag for automation |
 
 ## 6. Automation Layer (Power Automate)
 
@@ -104,42 +129,42 @@ The web part is configured via three primary groups in the Property Pane.
 #### 1. Display Settings
 Controls the visual header and text styling.
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| **Web Part Title** | Text | Header title (e.g., "Company Policies"). |
-| **Title Font Size** | Dropdown | Size of the title text (16px - 32px). |
-| **Web Part Description** | Multiline | Subtitle or instructions for users. |
-| **Description Font Size** | Dropdown | Size of the description text (12px - 18px). |
-| **Header Opacity** | Slider | Transparency of the header background (0.0 - 1.0). |
+| Property                  | Type      | Description                                        |
+| :------------------------ | :-------- | :------------------------------------------------- |
+| **Web Part Title**        | Text      | Header title (e.g., "Company Policies").           |
+| **Title Font Size**       | Dropdown  | Size of the title text (16px - 32px).              |
+| **Web Part Description**  | Multiline | Subtitle or instructions for users.                |
+| **Description Font Size** | Dropdown  | Size of the description text (12px - 18px).        |
+| **Header Opacity**        | Slider    | Transparency of the header background (0.0 - 1.0). |
 
 #### 2. Document Library Settings
 Configures the source of the documents.
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| **Select Site** | Site Picker | The SharePoint site hosting the documents. |
-| **Source Document Library** | Dropdown | The specific library to display. |
-| **Category Field** | Dropdown | Column for Side Navigation grouping. |
-| **Sub-Category Field** | Dropdown | Column for Top Tabs grouping. |
-| **Description Field** | Dropdown | Column for document details/summary. |
-| **Items per page** | Text | Number of items to show per page (Pagination). |
-| **Pinned Column** | Dropdown | Column determining pinned status (Yes/No). |
+| Property                    | Type        | Description                                    |
+| :-------------------------- | :---------- | :--------------------------------------------- |
+| **Select Site**             | Site Picker | The SharePoint site hosting the documents.     |
+| **Source Document Library** | Dropdown    | The specific library to display.               |
+| **Category Field**          | Dropdown    | Column for Side Navigation grouping.           |
+| **Sub-Category Field**      | Dropdown    | Column for Top Tabs grouping.                  |
+| **Description Field**       | Dropdown    | Column for document details/summary.           |
+| **Items per page**          | Text        | Number of items to show per page (Pagination). |
+| **Pinned Column**           | Dropdown    | Column determining pinned status (Yes/No).     |
 
 #### 3. Request Access Settings
 Configures the feedback and access tracking workflow.
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| **Show Request Access Column** | Toggle | On/Off switch for the entire request feature. |
-| **Select Request Site** | Site Picker | The site hosting the tracking list. |
-| **Requests List** | Dropdown | The list where requests are logged. |
-| **Email Field** | Dropdown | Field to store requester's email. |
-| **File ID Field** | Dropdown | Field to store the requested Document ID. |
-| **Request ID Field** | Dropdown | Field to store the unique GUID. |
-| **Request Date Field** | Dropdown | Field to store the timestamp. |
-| **Reminder Field** | Dropdown | Field to track if a reminder was sent. |
-| **Already Requested Message** | Multiline | Toast message for duplicate requests. |
-| **Reminder Sent Message** | Text | Toast message for successful nudges. |
+| Property                       | Type        | Description                                   |
+| :----------------------------- | :---------- | :-------------------------------------------- |
+| **Show Request Access Column** | Toggle      | On/Off switch for the entire request feature. |
+| **Select Request Site**        | Site Picker | The site hosting the tracking list.           |
+| **Requests List**              | Dropdown    | The list where requests are logged.           |
+| **Email Field**                | Dropdown    | Field to store requester's email.             |
+| **File ID Field**              | Dropdown    | Field to store the requested Document ID.     |
+| **Request ID Field**           | Dropdown    | Field to store the unique GUID.               |
+| **Request Date Field**         | Dropdown    | Field to store the timestamp.                 |
+| **Reminder Field**             | Dropdown    | Field to track if a reminder was sent.        |
+| **Already Requested Message**  | Multiline   | Toast message for duplicate requests.         |
+| **Reminder Sent Message**      | Text        | Toast message for successful nudges.          |
 
 ### Permission Requirements
 #### Source Document Library
