@@ -34,6 +34,28 @@ style: |
 
 ---
 
+# Problem Statement: The Challenge
+
+Organizing and managing access to critical documents in SharePoint often leads to frustration:
+
+1. **Discovery Issues**: Users struggle to find the right policy or SOP trapped in deep folder structures.
+2. **Access Blind Spots**: No visibility into *who* is accessing sensitive documents or *when*.
+3. **Manual Overhead**: Content owners are flooded with email requests for access approvals.
+4. **Inconsistent Brand**: Standard libraries look generic and don't match the corporate identity.
+
+---
+
+# The Solution: Order from Chaos
+
+**Document Listing V2** bridges the gap between chaos and efficiency.
+
+
+- **Centralized Catalog**: Organized by Category and Sub-Category for instant discovery.
+- **Automated Workflow**: Zero-touch access request handling.
+- **Audit Trail**: Full tracking of who requested, when, and feedback status.
+
+---
+
 # 1. Project Overview
 
 **Document Listing V2** is a persistent, theme-aware SPFx web part for displaying curated document catalogs.

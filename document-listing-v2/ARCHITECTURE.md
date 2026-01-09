@@ -98,11 +98,48 @@ Business logic is decoupled from the web part and handled by Power Automate flow
 Successful deployment requires strict adherence to the following configuration models.
 
 ### Web Part Configuration
-Administrators must configure the web part properties via the Edit Property Pane:
-1.  **Site Selection**: Choose **Source Site** (for documents) and **Request Site** (for logging).
-2.  **List Mapping**: Select the specific *Document Library* and *Request List*.
-3.  **Field Mapping**: Map internal field names (e.g., `Category`, `SubCategory`) to UI elements.
-4.  **Display Settings**: Customize Title, Description, and Header Opacity.
+
+The web part is configured via three primary groups in the Property Pane.
+
+#### 1. Display Settings
+Controls the visual header and text styling.
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| **Web Part Title** | Text | Header title (e.g., "Company Policies"). |
+| **Title Font Size** | Dropdown | Size of the title text (16px - 32px). |
+| **Web Part Description** | Multiline | Subtitle or instructions for users. |
+| **Description Font Size** | Dropdown | Size of the description text (12px - 18px). |
+| **Header Opacity** | Slider | Transparency of the header background (0.0 - 1.0). |
+
+#### 2. Document Library Settings
+Configures the source of the documents.
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| **Select Site** | Site Picker | The SharePoint site hosting the documents. |
+| **Source Document Library** | Dropdown | The specific library to display. |
+| **Category Field** | Dropdown | Column for Side Navigation grouping. |
+| **Sub-Category Field** | Dropdown | Column for Top Tabs grouping. |
+| **Description Field** | Dropdown | Column for document details/summary. |
+| **Items per page** | Text | Number of items to show per page (Pagination). |
+| **Pinned Column** | Dropdown | Column determining pinned status (Yes/No). |
+
+#### 3. Request Access Settings
+Configures the feedback and access tracking workflow.
+
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| **Show Request Access Column** | Toggle | On/Off switch for the entire request feature. |
+| **Select Request Site** | Site Picker | The site hosting the tracking list. |
+| **Requests List** | Dropdown | The list where requests are logged. |
+| **Email Field** | Dropdown | Field to store requester's email. |
+| **File ID Field** | Dropdown | Field to store the requested Document ID. |
+| **Request ID Field** | Dropdown | Field to store the unique GUID. |
+| **Request Date Field** | Dropdown | Field to store the timestamp. |
+| **Reminder Field** | Dropdown | Field to track if a reminder was sent. |
+| **Already Requested Message** | Multiline | Toast message for duplicate requests. |
+| **Reminder Sent Message** | Text | Toast message for successful nudges. |
 
 ### Permission Requirements
 #### Source Document Library
