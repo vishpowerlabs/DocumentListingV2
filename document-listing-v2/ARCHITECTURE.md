@@ -139,3 +139,18 @@ gulp package-solution --ship
 -   **Feedback Collection**: integrated rating dialog in the web part.
 -   **Usage Analytics**: Dashboard for most requested documents.
 -   **Auto-Approval**: Immediate access for low-risk categories.
+
+## 10. Code Quality & Security (SonarQube)
+
+The solution is continuously monitored for code quality and security vulnerabilities using **SonarCloud/SonarQube**.
+
+### Latest Scan Results
+![SonarQube Results](docs/images/sonarqube_results.png)
+
+-   **Quality Gate**: ✅ **Passed**
+-   **Security**: **A** Rating (0 Open Issues)
+-   **Reliability**: **A** Rating (3 Low-priority issues)
+-   **Maintainability**: **A** Rating (14 Code Smells - Minor)
+-   **Duplications**: **0.1%** (Excellent)
+
+This ensures the codebase remains secure, maintainable, and free of critical bugs before deployment.
