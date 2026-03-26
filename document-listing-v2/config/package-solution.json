@@ -1,9 +1,10 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "document-listing-v-2-client-side-solution",
+    "name": "custom-document-listing-client-side-solution",
     "id": "de8c9ae6-fdac-41d9-b969-bb6a792a9e4f",
     "version": "1.0.0.0",
+    "title": "Custom Document Listing",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -16,10 +17,10 @@
     },
     "metadata": {
       "shortDescription": {
-        "default": "document-listing-v2 description"
+        "default": "Custom Document Listing - A theme-aware document catalog."
       },
       "longDescription": {
-        "default": "document-listing-v2 description"
+        "default": "A theme-aware SharePoint Framework (SPFx) web part to display searchable and filterable document catalogs with access request capabilities."
       },
       "screenshotPaths": [],
       "videoUrl": "",
@@ -27,14 +28,14 @@
     },
     "features": [
       {
-        "title": "document-listing-v-2 Feature",
-        "description": "The feature that activates elements of the document-listing-v-2 solution.",
+        "title": "Custom Document Listing Feature",
+        "description": "The feature that activates elements of the Custom Document Listing solution.",
         "id": "05999f47-8d1e-4140-874d-298a75d7b506",
         "version": "1.0.0.0"
       }
     ]
   },
   "paths": {
-    "zippedPackage": "solution/document-listing-v-2.sppkg"
+    "zippedPackage": "solution/custom-document-listing.sppkg"
   }
 }

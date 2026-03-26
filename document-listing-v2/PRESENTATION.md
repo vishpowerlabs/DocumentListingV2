@@ -13,9 +13,16 @@ style: |
   h2 {
     color: #2b88d8;
   }
+  img {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
 ---
 
-# Document Listing V2
+# Custom Document Listing
 ## Architecture & Design Overview
 
 ---
@@ -29,8 +36,9 @@ style: |
 5. Data Layer (SharePoint Lists)
 6. Automation Layer (Power Automate)
 7. Security Model
-8. Code Quality
-9. Future Roadmap
+8. Build & Deployment
+9. Code Quality
+10. Future Roadmap
 
 ---
 
@@ -47,7 +55,7 @@ Organizing and managing access to critical documents in SharePoint often leads t
 
 # The Solution: Order from Chaos
 
-**Document Listing V2** bridges the gap between chaos and efficiency.
+**Custom Document Listing** bridges the gap between chaos and efficiency.
 
 
 - **Centralized Catalog**: Organized by Category and Sub-Category for instant discovery.
@@ -58,12 +66,15 @@ Organizing and managing access to critical documents in SharePoint often leads t
 
 # 1. Project Overview
 
-**Document Listing V2** is a persistent, theme-aware SPFx web part for displaying curated document catalogs.
+**Custom Document Listing** is a persistent, theme-aware SPFx web part for displaying curated document catalogs.
+
+![Custom Document Listing UI](docs/images/app_visual.png)
 
 ### Key Use Cases
-- **Curated Experience**: Policies, Procedures, Standard Operating Procedures (SOPs).
-- **Access Control**: Users can see documents exist but must **request access** to download sensitive files.
-- **Theme Consistency**: Automatically adapts to any SharePoint site branding.
+1. **Central Policy Hub**: Visualize SOPs & Policies (Categorized).
+2. **Controlled Distribution**: Track "Request Access" for sensitive docs.
+3. **Feedback Loop**: Automated follow-up & feedback collection.
+4. **Self-Service Templates**: Easy discovery for project assets.
 
 ---
 
@@ -144,14 +155,32 @@ Organizing and managing access to critical documents in SharePoint often leads t
 - **Mapping**: Dynamic field mapping in Property Pane.
 
 ### Permissions
-| Component | Access Level | Rationale |
-| :--- | :--- | :--- |
-| **Doc Library** | Read-Only | Protects "Gold Copy" integrity. |
-| **Request List** | Contribute* | *Item-level security:* Users only see their own requests. |
+| Component        | Access Level | Rationale                                                 |
+| :--------------- | :----------- | :-------------------------------------------------------- |
+| **Doc Library**  | Read-Only    | Protects "Gold Copy" integrity.                           |
+| **Request List** | Contribute*  | *Item-level security:* Users only see their own requests. |
 
 ---
 
-# 8. Code Quality & Security
+# 8. Build & Deployment
+
+### Build Commands
+```bash
+# Install dependencies
+npm install
+
+# Build & Package (Production)
+npm run build
+```
+
+### Deployment
+1. Upload `.sppkg` to **App Catalog**.
+2. Deploy and trust the solution.
+3. Add web part to page.
+
+---
+
+# 9. Code Quality & Security
 
 **SonarQube Analysis Result: PASSED**
 
@@ -163,7 +192,7 @@ Organizing and managing access to critical documents in SharePoint often leads t
 
 ---
 
-# 9. Future Roadmap
+# 10. Future Roadmap
 
 - **Feedback Collection**: In-app rating dialog (5-star + comments).
 - **Usage Analytics**: Dashboard for "Top Requested Documents".
