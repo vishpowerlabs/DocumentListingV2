@@ -1,6 +1,7 @@
 export interface ISPList {
     Id: string;
     Title: string;
+    BaseType?: number;
 }
 
 export interface ISPField {
