@@ -28,6 +28,8 @@ export interface IDocumentListingV2WebPartProps {
   description: string;
   sourceLibraryId: string;
   requestListId: string;
+  defaultSourceLibraryTitle?: string;
+  defaultRequestListTitle?: string;
   categoryField: string;
   subCategoryField: string;
   descriptionField: string;
@@ -112,26 +114,26 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
   protected onInit(): Promise<void> {
     return this._getEnvironmentMessage().then(message => {
       this._environmentMessage = message;
-      this._fetchLists();
-      this._fetchLists();
-      // If we already have a library selected, fetch fields
       const siteUrl = this.properties.sites && this.properties.sites.length > 0 ? this.properties.sites[0].url : this.context.pageContext.web.absoluteUrl;
       const requestSiteUrl = this.properties.requestSites && this.properties.requestSites.length > 0 ? this.properties.requestSites[0].url : this.context.pageContext.web.absoluteUrl;
 
+      this._fetchLists(siteUrl);
+      this._fetchRequestLists(requestSiteUrl);
+
+      // If we already have a library selected, fetch fields
       if (this.properties.sourceLibraryId) {
         this._fetchFields(this.properties.sourceLibraryId, siteUrl);
       }
       if (this.properties.requestListId) {
         this._fetchRequestFields(this.properties.requestListId, requestSiteUrl);
       }
-      this._fetchRequestLists(requestSiteUrl);
     });
   }
 
   private _fetchLists(siteUrl?: string): void {
     const webUrl = siteUrl || this.context.pageContext.web.absoluteUrl;
     this.context.spHttpClient.get(
-      `${webUrl}/_api/web/lists?$select=Id,Title&$filter=Hidden eq false`,
+      `${webUrl}/_api/web/lists?$select=Id,Title,BaseType&$filter=Hidden eq false and BaseType eq 1`,
       SPHttpClient.configurations.v1
     )
       .then((response: SPHttpClientResponse) => response.json())
@@ -142,6 +144,16 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
             text: list.Title
           };
         });
+
+        const defaultLibraryTitle = this.properties.defaultSourceLibraryTitle?.trim().toLowerCase();
+        if (!this.properties.sourceLibraryId && defaultLibraryTitle) {
+          const defaultLibrary = data.value.find((list: ISPList) => list.Title.trim().toLowerCase() === defaultLibraryTitle);
+          if (defaultLibrary) {
+            this.properties.sourceLibraryId = defaultLibrary.Id;
+            this._fetchFields(defaultLibrary.Id, webUrl);
+          }
+        }
+
         this.context.propertyPane.refresh();
       })
       .catch((error) => {
@@ -152,7 +164,7 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
   private _fetchRequestLists(siteUrl?: string): void {
     const webUrl = siteUrl || this.context.pageContext.web.absoluteUrl;
     this.context.spHttpClient.get(
-      `${webUrl}/_api/web/lists?$select=Id,Title&$filter=Hidden eq false`,
+      `${webUrl}/_api/web/lists?$select=Id,Title,BaseType&$filter=Hidden eq false and BaseType eq 0`,
       SPHttpClient.configurations.v1
     )
       .then((response: SPHttpClientResponse) => response.json())
@@ -163,6 +175,16 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
             text: list.Title
           };
         });
+
+        const defaultRequestListTitle = this.properties.defaultRequestListTitle?.trim().toLowerCase();
+        if (!this.properties.requestListId && defaultRequestListTitle) {
+          const defaultList = data.value.find((list: ISPList) => list.Title.trim().toLowerCase() === defaultRequestListTitle);
+          if (defaultList) {
+            this.properties.requestListId = defaultList.Id;
+            this._fetchRequestFields(defaultList.Id, webUrl);
+          }
+        }
+
         this.context.propertyPane.refresh();
       })
       .catch((error) => {
@@ -223,8 +245,10 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
   }
 
   protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void {
-    const siteUrl = this.properties.sites && this.properties.sites.length > 0 ? this.properties.sites[0].url : this.context.pageContext.web.absoluteUrl;
-    const requestSiteUrl = this.properties.requestSites && this.properties.requestSites.length > 0 ? this.properties.requestSites[0].url : this.context.pageContext.web.absoluteUrl;
+    const siteSelection = propertyPath === 'sites' ? newValue : this.properties.sites;
+    const requestSiteSelection = propertyPath === 'requestSites' ? newValue : this.properties.requestSites;
+    const siteUrl = siteSelection && siteSelection.length > 0 ? siteSelection[0].url : this.context.pageContext.web.absoluteUrl;
+    const requestSiteUrl = requestSiteSelection && requestSiteSelection.length > 0 ? requestSiteSelection[0].url : this.context.pageContext.web.absoluteUrl;
 
     if (propertyPath === 'sites') {
       this._listsDropdownOptions = [];
