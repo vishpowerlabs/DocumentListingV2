@@ -33,7 +33,9 @@
       "officeFabricIconFontName": "Page",
       "properties": {
         "description": "DocumentListingV2",
-        "showRequestAccess": true
+        "showRequestAccess": true,
+        "webPartTitle": "Custom Document Library",
+        "webPartDescription": "Browse documents from a SharePoint document library."
       }
     }
   ]
