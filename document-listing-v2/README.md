@@ -2,9 +2,7 @@
 
 ## Summary
 
-Short summary on functionality and used technologies.
-
-[picture of the solution in action, if possible]
+`document-listing-v-2` is a SharePoint Framework (SPFx) web part for listing documents from a SharePoint library and optionally logging access requests in a SharePoint list. The web part supports category and sub-category grouping, search, pinned documents, and request access workflows.
 
 ## Used SharePoint Framework Version
 
@@ -19,68 +17,113 @@ Short summary on functionality and used technologies.
 
 ## Prerequisites
 
-> Any special pre-requisites?
+- Node.js `22.x` (as required by this repo)
+- `npm` installed
+- A SharePoint site with a document library and optional request access list
+- A SharePoint workbench or page where the SPFx web part can be deployed
 
 ## Solution
 
-| Solution    | Author(s)                                               |
-| ----------- | ------------------------------------------------------- |
-| folder name | Author details (name, company, twitter alias with link) |
+| Solution | Author(s) |
+| --- | --- |
+| `document-listing-v-2` | `vishpowerlabs` |
 
-## Version history
+## Overview
 
-| Version | Date             | Comments        |
-| ------- | ---------------- | --------------- |
-| 1.1     | March 10, 2021   | Update comment  |
-| 1.0     | January 29, 2021 | Initial release |
+This SPFx solution renders a document listing web part that:
 
-## Disclaimer
+- Loads documents from a selected SharePoint document library
+- Groups items by category and sub-category fields
+- Supports custom title, description, page size, and header opacity
+- Allows users to request access to documents
+- Logs access requests to a configurable SharePoint list
+- Sends reminders by updating a reminder field in the request list
 
-**THIS CODE IS PROVIDED _AS IS_ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+## Build and Run
 
----
+From the repository root:
 
-## Minimal Path to Awesome
+```bash
+npm install
+npm run start
+```
 
-- Clone this repository
-- Ensure that you are at the solution folder
-- in the command-line run:
-  - `npm install -g @rushstack/heft`
-  - `npm install`
-  - `heft start`
+For a production package:
 
-> Include any additional steps as needed.
+```bash
+npm run build
+```
 
-Other build commands can be listed using `heft --help`.
+## Web Part Configuration
 
-## Features
+The web part uses the SPFx property pane to configure display settings, source library mappings, and request access behavior.
 
-### 📖 content catalog
-- **Dynamic Listing**: Fetches documents from a configured SharePoint Library.
-- **Categorization**: Group documents by "Category" (Side Nav) and "SubCategory" (Top Tabs).
-- **Search**: Real-time filtering by title and description.
-- **Pinning**: Pin important documents to the top using a configured field.
+### Display Settings
 
-### 🔒 Access Control
-- **Request Access**: Users can request access to specific documents.
-- **Workflow**: Requests are logged to a separate SharePoint List.
-- **Reminders**: Users can send reminders for pending requests.
-- **Configuration**: Toggle the "Request Access" column on/off via properties.
+- `Web Part Title`: visible title text for the web part
+- `Title Font Size`: `16px`, `20px`, `24px`, `32px`
+- `Web Part Description`: optional description shown below the title
+- `Description Font Size`: `12px`, `14px`, `16px`, `18px`
+- `Header Opacity`: opacity value between `0` and `1`
 
-### 🎨 UI/UX
-- **Theme Aware**: Automatically adapts to the site theme (colors, fonts).
-- **Custom Header**: Configurable title, description, and opacity settings.
-- **Responsive**: Mobile-friendly layout using Fluent UIStack.
+### Document Library Settings
 
-> Notice that better pictures and documentation will increase the sample usage and the value you are providing for others. Thanks for your submissions advance.
+- `Select Site`: choose the site containing your document library
+- `Source Document Library`: choose the library that contains documents
+- `Category Field`: field used to group documents into categories
+- `Sub-Category Field`: field used to group documents into sub-categories
+- `Description Field`: field used for item descriptions
+- `Items per page`: page size for listing results
+- `Pinned Column`: optional field used to pin documents to the top
+- `Title Column`: optional field used as the document title instead of the default Title field
 
-> Share your web part with others through Microsoft 365 Patterns and Practices program to get visibility and exposure. More details on the community, open-source projects and other activities from http://aka.ms/m365pnp.
+### Request Access Settings
+
+- `Show Request Access Column`: toggle request access feature on/off
+- `Select Request Site`: choose the site containing your requests list
+- `Requests List`: choose the SharePoint list used to store access requests
+- `Email Field (in Request List)`: field storing the requester's email
+- `File ID Field`: field storing the file identifier
+- `Request ID Field`: field storing the generated request ID
+- `Request Date Field`: field storing the request date
+- `Reminder Field`: field used to mark reminders when users ask for a follow-up request
+- `Already Requested Message`: text shown when the user has already requested access
+- `Reminder Sent Message`: toast text shown after sending a reminder
+
+## Required SharePoint Fields
+
+### Source Document Library Fields
+
+The web part requires a document library and the following field mappings:
+
+- `Category Field`: defaults to `Category`
+- `SubCategory Field`: defaults to `SubCategory`
+- `Description Field`: defaults to `Description`
+- `Title Column`: optional; if not provided the web part uses the library item `Title` or document file name
+- `Pinned Column`: optional; supports boolean values or `Yes` / `1` / `true`
+
+> If no field is selected, the web part defaults to `Category`, `SubCategory`, and `Description` internal names.
+
+### Request Access List Fields
+
+The request access workflow logs items in a separate SharePoint list and requires these field mappings:
+
+- `Email Field`: defaults to `Email`
+- `File ID Field`: defaults to `FileID`
+- `Request ID Field`: defaults to `RequestID`
+- `Request Date Field`: defaults to `RequestDate`
+- `Reminder Field`: defaults to `Reminder`
+
+The web part writes a new item to the requests list when a document access request is created, and updates the reminder field for follow-up reminders.
+
+## Notes
+
+- List and field dropdowns are populated dynamically from the selected site.
+- The request access feature only works when `Requests List` and required request fields are configured.
+- The request list item title is generated automatically as `Request: <email> - <fileId>`.
 
 ## References
 
 - [Getting started with SharePoint Framework](https://docs.microsoft.com/sharepoint/dev/spfx/set-up-your-developer-tenant)
-- [Building for Microsoft teams](https://docs.microsoft.com/sharepoint/dev/spfx/build-for-teams-overview)
-- [Use Microsoft Graph in your solution](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/using-microsoft-graph-apis)
-- [Publish SharePoint Framework applications to the Marketplace](https://docs.microsoft.com/sharepoint/dev/spfx/publish-to-marketplace-overview)
-- [Microsoft 365 Patterns and Practices](https://aka.ms/m365pnp) - Guidance, tooling, samples and open-source controls for your Microsoft 365 development
 - [Heft Documentation](https://heft.rushstack.io/)
+- [SPFx Property Pane Controls](https://pnp.github.io/spfx-controls-react/)
