@@ -37,6 +37,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
     themePrimary,
     headerTextColor,
     pinnedField,
+    titleField,
     showRequestAccess,
     siteUrl,
     requestSiteUrl
@@ -68,7 +69,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
   React.useEffect(() => {
     if (sourceLibraryId) {
       setLoading(true);
-      SPService.Instance.getDocuments(sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, siteUrl)
+      SPService.Instance.getDocuments(sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, siteUrl)
         .then((docs: IDocument[]) => {
           setItems(docs);
 
@@ -86,7 +87,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
           setLoading(false);
         });
     }
-  }, [sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, siteUrl]);
+  }, [sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, siteUrl]);
 
   // Filter Logic
   React.useEffect(() => {

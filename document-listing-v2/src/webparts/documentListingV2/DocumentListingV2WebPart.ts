@@ -45,6 +45,7 @@ export interface IDocumentListingV2WebPartProps {
   reminderSentMessage: string;
   headerOpacity: number;
   pinnedField: string;
+  titleField: string;
   showRequestAccess: boolean;
   sites: IPropertyFieldSite[];
   requestSites: IPropertyFieldSite[];
@@ -98,6 +99,7 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
           this._bodyBackground
         ),
         pinnedField: this.properties.pinnedField,
+        titleField: this.properties.titleField,
         showRequestAccess: this.properties.showRequestAccess !== undefined ? this.properties.showRequestAccess : true,
         siteUrl: siteUrl,
         requestSiteUrl: requestSiteUrl
@@ -233,6 +235,7 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
       this.properties.subCategoryField = '';
       this.properties.descriptionField = '';
       this.properties.pinnedField = '';
+      this.properties.titleField = '';
 
       this._fetchLists(siteUrl);
     }
@@ -429,6 +432,11 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
                 }),
                 PropertyPaneDropdown('pinnedField', {
                   label: 'Pinned Column',
+                  options: this._fieldsDropdownOptions,
+                  disabled: this._fieldsDropdownOptions.length === 0
+                }),
+                PropertyPaneDropdown('titleField', {
+                  label: 'Title Column',
                   options: this._fieldsDropdownOptions,
                   disabled: this._fieldsDropdownOptions.length === 0
                 })

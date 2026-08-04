@@ -29,6 +29,7 @@ export class SPService {
         subCategoryField: string = 'SubCategory',
         descriptionField: string = 'Description',
         pinnedField?: string,
+        titleField?: string,
         siteUrl?: string
     ): Promise<IDocument[]> {
         if (!this.context || !listId) return [];
@@ -47,6 +48,7 @@ export class SPService {
             if (subCategoryField) selectFields.push(subCategoryField);
             if (descriptionField) selectFields.push(descriptionField);
             if (pinnedField) selectFields.push(pinnedField);
+            if (titleField) selectFields.push(titleField);
 
             // Remove duplicates just in case
             const uniqueSelects = Array.from(new Set(selectFields)).join(',');
@@ -66,11 +68,17 @@ export class SPService {
 
             return data.value.map((item: any) => ({
                 Id: item.Id,
-                Title: item.Title || item.File?.Name || 'Untitled',
+                Title: (titleField ? item[titleField] : item.Title) || item.File?.Name || 'Untitled',
                 Name: item.File?.Name || 'Untitled',
                 Description: item[descriptionField] || '',
                 FileRef: item.File?.ServerRelativeUrl,
-                Pinned: pinnedField ? !!item[pinnedField] : false, // Map pinned field
+                Pinned: pinnedField ? (
+                    item[pinnedField] === true || 
+                    item[pinnedField] === 'Yes' || 
+                    item[pinnedField] === '1' || 
+                    item[pinnedField] === 1 ||
+                    (typeof item[pinnedField] === 'string' && item[pinnedField].toLowerCase() === 'true')
+                ) : false, // Map pinned field safely
                 Modified: item.Modified,
                 Created: item.Created,
                 Category: item[categoryField] || 'Uncategorized',
