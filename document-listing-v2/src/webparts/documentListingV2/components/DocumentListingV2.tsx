@@ -29,6 +29,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
     categoryField,
     subCategoryField,
     descriptionField,
+    activeStatusField,
     webPartTitle,
     webPartTitleFontSize,
     webPartDescription,
@@ -69,14 +70,15 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
   React.useEffect(() => {
     if (sourceLibraryId) {
       setLoading(true);
-      SPService.Instance.getDocuments(sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, siteUrl)
+      SPService.Instance.getDocuments(sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, activeStatusField, siteUrl)
         .then((docs: IDocument[]) => {
           setItems(docs);
 
           // Extract Categories
           const uniqueCats = Array.from(new Set(docs.map(d => d.Category).filter(Boolean)));
           setCategories(uniqueCats.sort());
-          if (uniqueCats.length > 0) setSelectedCategory(uniqueCats[0]);
+          setSelectedCategory('All');
+          setSelectedSubCategory('');
 
           setLoading(false);
         })
@@ -87,7 +89,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
           setLoading(false);
         });
     }
-  }, [sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, siteUrl]);
+  }, [sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, activeStatusField, siteUrl]);
 
   // Filter Logic
   React.useEffect(() => {
