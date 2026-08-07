@@ -33,6 +33,7 @@ export interface IDocumentListingV2WebPartProps {
   categoryField: string;
   subCategoryField: string;
   descriptionField: string;
+  activeStatusField: string;
   pageSize: number;
   requestEmailField: string;
   requestFileIdField: string;
@@ -83,6 +84,7 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
         subCategoryField: this.properties.subCategoryField || 'SubCategory',
         descriptionField: this.properties.descriptionField || 'Description',
         pageSize: this.properties.pageSize || 10,
+        activeStatusField: this.properties.activeStatusField,
         requestEmailField: this.properties.requestEmailField || 'Email',
         requestFileIdField: this.properties.requestFileIdField || 'FileID',
         requestRequestIdField: this.properties.requestRequestIdField || 'RequestID',
@@ -212,6 +214,19 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
         // Sort alphabetically
         this._fieldsDropdownOptions.sort((a, b) => a.text.localeCompare(b.text));
 
+        const hasConfiguredActiveField = !!this.properties.activeStatusField &&
+          data.value.some((field: ISPField) => field.InternalName === this.properties.activeStatusField);
+
+        if (!hasConfiguredActiveField) {
+          const defaultActiveField = data.value.find((field: ISPField) => {
+            const title = field.Title?.trim().toLowerCase();
+            const internalName = field.InternalName?.trim().toLowerCase();
+            return title === 'active' || internalName === 'active';
+          });
+
+          this.properties.activeStatusField = defaultActiveField ? defaultActiveField.InternalName : '';
+        }
+
         this.context.propertyPane.refresh();
       })
       .catch((error) => {
@@ -258,6 +273,7 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
       this.properties.categoryField = '';
       this.properties.subCategoryField = '';
       this.properties.descriptionField = '';
+      this.properties.activeStatusField = '';
       this.properties.pinnedField = '';
       this.properties.titleField = '';
 
@@ -447,6 +463,11 @@ export default class DocumentListingV2WebPart extends BaseClientSideWebPart<IDoc
                 }),
                 PropertyPaneDropdown('descriptionField', {
                   label: 'Description Field',
+                  options: this._fieldsDropdownOptions,
+                  disabled: this._fieldsDropdownOptions.length === 0
+                }),
+                PropertyPaneDropdown('activeStatusField', {
+                  label: "Active Status Field (only items with value 'Active' are shown)",
                   options: this._fieldsDropdownOptions,
                   disabled: this._fieldsDropdownOptions.length === 0
                 }),
