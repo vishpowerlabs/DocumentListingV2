@@ -30,6 +30,7 @@ export class SPService {
         descriptionField: string = 'Description',
         pinnedField?: string,
         titleField?: string,
+        activeStatusField?: string,
         siteUrl?: string
     ): Promise<IDocument[]> {
         if (!this.context || !listId) return [];
@@ -49,6 +50,7 @@ export class SPService {
             if (descriptionField) selectFields.push(descriptionField);
             if (pinnedField) selectFields.push(pinnedField);
             if (titleField) selectFields.push(titleField);
+            if (activeStatusField) selectFields.push(activeStatusField);
 
             // Remove duplicates just in case
             const uniqueSelects = Array.from(new Set(selectFields)).join(',');
@@ -66,7 +68,11 @@ export class SPService {
 
             const data = await response.json();
 
-            return data.value.map((item: any) => ({
+            const filteredItems = activeStatusField
+                ? data.value.filter((item: any) => this._isActiveStatus(item[activeStatusField]))
+                : data.value;
+
+            return filteredItems.map((item: any) => ({
                 Id: item.Id,
                 Title: (titleField ? item[titleField] : item.Title) || item.File?.Name || 'Untitled',
                 Name: item.File?.Name || 'Untitled',
@@ -92,6 +98,32 @@ export class SPService {
             console.error('Error fetching documents', error);
             return [];
         }
+    }
+
+    private _isActiveStatus(fieldValue: unknown): boolean {
+        return this._getFieldValueAsText(fieldValue).toLowerCase() === 'active';
+    }
+
+    private _getFieldValueAsText(fieldValue: unknown): string {
+        if (typeof fieldValue === 'string') {
+            return fieldValue.trim();
+        }
+
+        if (typeof fieldValue === 'number' || typeof fieldValue === 'boolean') {
+            return String(fieldValue).trim();
+        }
+
+        if (fieldValue && typeof fieldValue === 'object') {
+            const maybeChoiceValue = fieldValue as { Value?: unknown; Label?: unknown };
+            if (typeof maybeChoiceValue.Value === 'string') {
+                return maybeChoiceValue.Value.trim();
+            }
+            if (typeof maybeChoiceValue.Label === 'string') {
+                return maybeChoiceValue.Label.trim();
+            }
+        }
+
+        return '';
     }
 
     public async logAccessRequest(
