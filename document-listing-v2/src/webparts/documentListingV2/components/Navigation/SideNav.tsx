@@ -9,10 +9,11 @@ export interface ISideNavProps {
 
 export const SideNav: React.FunctionComponent<ISideNavProps> = (props) => {
     const { categories, selectedCategory, onSelectCategory } = props;
+    const navCategories = ['All', ...categories.filter((cat) => cat !== 'All')];
 
     const navGroups: INavLinkGroup[] = [
         {
-            links: categories.map((cat) => ({
+            links: navCategories.map((cat) => ({
                 name: cat,
                 url: '',
                 key: cat,
