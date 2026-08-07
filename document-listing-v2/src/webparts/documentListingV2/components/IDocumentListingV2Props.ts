@@ -19,6 +19,7 @@ export interface IDocumentListingV2Props {
   subCategoryField: string;
   descriptionField: string;
   titleField?: string;
+  activeStatusField?: string;
   pageSize: number;
   requestEmailField: string;
   requestFileIdField: string;
