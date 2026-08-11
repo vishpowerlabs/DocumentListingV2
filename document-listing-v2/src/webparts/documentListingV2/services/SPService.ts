@@ -7,6 +7,7 @@ import { ISPItemsResponse } from "../models/ISPData";
 export class SPService {
     private static _instance: SPService;
     private context!: WebPartContext;
+    private static readonly _documentLoadErrorMessage = 'Unable to load documents right now.';
 
     private constructor() {
         // Private constructor
@@ -54,8 +55,17 @@ export class SPService {
 
             // Remove duplicates just in case
             const uniqueSelects = Array.from(new Set(selectFields)).join(',');
+            const queryParts = [
+                `$select=${encodeURIComponent(uniqueSelects)}`,
+                `$expand=${encodeURIComponent('File,Editor,Author')}`
+            ];
 
-            const endpoint = `${webUrl}/_api/web/lists(guid'${listId}')/items?$select=${uniqueSelects}&$expand=File,Editor,Author`;
+            if (activeStatusField) {
+                const activeFilter = `${activeStatusField} eq ${this._toODataStringLiteral('Active')}`;
+                queryParts.push(`$filter=${encodeURIComponent(activeFilter)}`);
+            }
+
+            const endpoint = `${webUrl}/_api/web/lists(guid'${listId}')/items?${queryParts.join('&')}`;
 
             const response: SPHttpClientResponse = await this.context.spHttpClient.get(
                 endpoint,
@@ -68,11 +78,7 @@ export class SPService {
 
             const data = await response.json();
 
-            const filteredItems = activeStatusField
-                ? data.value.filter((item: any) => this._isActiveStatus(item[activeStatusField]))
-                : data.value;
-
-            return filteredItems.map((item: any) => ({
+            return data.value.map((item: any) => ({
                 Id: item.Id,
                 Title: (titleField ? item[titleField] : item.Title) || item.File?.Name || 'Untitled',
                 Name: item.File?.Name || 'Untitled',
@@ -96,34 +102,12 @@ export class SPService {
             }));
         } catch (error) {
             console.error('Error fetching documents', error);
-            return [];
+            throw new Error(SPService._documentLoadErrorMessage);
         }
     }
 
-    private _isActiveStatus(fieldValue: unknown): boolean {
-        return this._getFieldValueAsText(fieldValue).toLowerCase() === 'active';
-    }
-
-    private _getFieldValueAsText(fieldValue: unknown): string {
-        if (typeof fieldValue === 'string') {
-            return fieldValue.trim();
-        }
-
-        if (typeof fieldValue === 'number' || typeof fieldValue === 'boolean') {
-            return String(fieldValue).trim();
-        }
-
-        if (fieldValue && typeof fieldValue === 'object') {
-            const maybeChoiceValue = fieldValue as { Value?: unknown; Label?: unknown };
-            if (typeof maybeChoiceValue.Value === 'string') {
-                return maybeChoiceValue.Value.trim();
-            }
-            if (typeof maybeChoiceValue.Label === 'string') {
-                return maybeChoiceValue.Label.trim();
-            }
-        }
-
-        return '';
+    private _toODataStringLiteral(value: string): string {
+        return `'${value.replace(/'/g, "''")}'`;
     }
 
     public async logAccessRequest(
