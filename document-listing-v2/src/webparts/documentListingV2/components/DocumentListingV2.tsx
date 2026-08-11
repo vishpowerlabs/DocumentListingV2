@@ -23,6 +23,7 @@ import { DataTable } from './Content/DataTable';
 import { IDocument } from '../models/interfaces';
 
 export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props> = (props) => {
+  const documentLoadErrorMessage = 'Unable to load documents right now. Please refresh the page or contact your SharePoint administrator if the issue continues.';
   const {
     context,
     sourceLibraryId,
@@ -70,6 +71,7 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
   React.useEffect(() => {
     if (sourceLibraryId) {
       setLoading(true);
+      setError(undefined);
       SPService.Instance.getDocuments(sourceLibraryId, categoryField, subCategoryField, descriptionField, pinnedField, titleField, activeStatusField, siteUrl)
         .then((docs: IDocument[]) => {
           setItems(docs);
@@ -82,10 +84,12 @@ export const DocumentListingV2: React.FunctionComponent<IDocumentListingV2Props>
 
           setLoading(false);
         })
-        .catch((err: any) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const errorMessage = err.message || (typeof err === 'string' ? err : 'Unknown error');
-          setError(errorMessage);
+        .catch(() => {
+          setItems([]);
+          setCategories([]);
+          setSubCategories([]);
+          setFilteredItems([]);
+          setError(documentLoadErrorMessage);
           setLoading(false);
         });
     }
